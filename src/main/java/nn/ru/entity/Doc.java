@@ -18,7 +18,7 @@ public class Doc {
     private Long id;
 
     // @ManyToOne: Item-Group - прямая
-    @ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "item_id")
+    @ManyToOne(cascade = CascadeType.REFRESH)
+    @JoinColumn(name = "item_id", nullable = false)
     private Item item;
 }

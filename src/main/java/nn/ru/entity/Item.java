@@ -18,7 +18,7 @@ public class Item {
     private Long id;
 
     // @ManyToOne: Item-Group - прямая
-    @ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "group_id")
+    @ManyToOne(cascade = CascadeType.REMOVE)
+    @JoinColumn(name = "group_id", nullable = false)
     private Group group;
 }

@@ -63,12 +63,14 @@ public class HibernateTest {
             Item item = new Item();
             Group group = new Group();
 
+            doc.setItem(item);
             session.save(doc);
-            session.save(item);
-            session.save(group);
 
             item.setGroup(group);
-            doc.setItem(item);
+            session.save(item);
+
+            session.save(group);
+
 
 
             session.getTransaction().commit();
@@ -96,11 +98,13 @@ public class HibernateTest {
             Group group = new Group();
 
             session.save(doc);
-            session.save(group);
-            session.save(item);
-
-            item.setGroup(group);
             doc.setItem(item);
+
+            session.save(group);
+
+            session.save(item);
+            item.setGroup(group);
+
 
 
             session.getTransaction().commit();
@@ -127,12 +131,15 @@ public class HibernateTest {
             Item item = new Item();
             Group group = new Group();
 
-            session.save(group);
-            session.save(item);
-            session.save(doc);
 
             item.setGroup(group);
+            session.save(group);
+
             doc.setItem(item);
+            session.save(item);
+
+            session.save(doc);
+
 
 
             session.getTransaction().commit();
@@ -158,6 +165,9 @@ public class HibernateTest {
             Doc doc = new Doc();
             Group group = new Group();
             Item item = new Item();
+
+            item.setGroup(group);
+            doc.setItem(item);
 
             session.save(group);
             session.save(doc);
@@ -187,12 +197,14 @@ public class HibernateTest {
             Item item = new Item();
             Group group = new Group();
 
+
+            item.setGroup(group);
+            doc.setItem(item);
+
             session.save(item);
             session.save(doc);
             session.save(group);
 
-            item.setGroup(group);
-            doc.setItem(item);
 
 
             session.getTransaction().commit();
@@ -219,14 +231,74 @@ public class HibernateTest {
             Item item = new Item();
             Group group = new Group();
 
+            item.setGroup(group);
+            doc.setItem(item);
+
             session.save(item);
             session.save(group);
             session.save(doc);
 
-            item.setGroup(group);
-            doc.setItem(item);
 
             session.getTransaction().commit();
         }
     }
+
+    @Test
+    public void test_DocItemGroup_GID_delete() {
+
+        // СОЗДАЕМ КОНФИГУРАЦИЮ И ДОБАВЛЯЕМ СУЩНОСТИ:
+        Configuration configuration = new Configuration().configure();
+        configuration.addAnnotatedClass(nn.ru.entity.Doc.class);
+        configuration.addAnnotatedClass(nn.ru.entity.Item.class);
+        configuration.addAnnotatedClass(nn.ru.entity.Group.class);
+
+        // СОЗДАЕМ ФАКБРИКУ СЕССИЙ, ОТКРЫВАЕМ СЕССИЮ И ОТКРЫВАЕМ ТРАНЗАКЦИЮ:
+
+        try (SessionFactory factory = configuration.buildSessionFactory();
+             Session session = factory.openSession();) {
+            Transaction transaction = session.beginTransaction();
+
+            // РАБОТА С ДАННЫМИ:
+            Doc doc = session.get(Doc.class, 15L);
+            session.delete(doc);
+
+
+
+
+            session.getTransaction().commit();
+        }
+    }
+
+
+    @Test
+    public void test_DocItemGroup_GID_update() {
+
+        // СОЗДАЕМ КОНФИГУРАЦИЮ И ДОБАВЛЯЕМ СУЩНОСТИ:
+        Configuration configuration = new Configuration().configure();
+        configuration.addAnnotatedClass(nn.ru.entity.Doc.class);
+        configuration.addAnnotatedClass(nn.ru.entity.Item.class);
+        configuration.addAnnotatedClass(nn.ru.entity.Group.class);
+
+        // СОЗДАЕМ ФАКБРИКУ СЕССИЙ, ОТКРЫВАЕМ СЕССИЮ И ОТКРЫВАЕМ ТРАНЗАКЦИЮ:
+
+        try (SessionFactory factory = configuration.buildSessionFactory();
+             Session session = factory.openSession();) {
+            Transaction transaction = session.beginTransaction();
+
+            // РАБОТА С ДАННЫМИ:
+            Doc doc = session.get(Doc.class, 14L);
+            Item item = session.get(Item.class, 18L);
+            doc.setItem(item);
+            session.update(doc);
+
+
+
+
+            session.getTransaction().commit();
+        }
+    }
+
+
+
+
 }
